@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión Digitalización 365 - IES La Fresneda</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    min-height:100vh;
+}
+
+.screen{
+    display:none;
+    padding:40px;
+    max-width:1000px;
+    margin:auto;
+}
+
+.active{
+    display:block;
+}
+
+h1,h2{
+    margin-bottom:20px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:15px;
+    margin:20px 0;
+}
+
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    margin:8px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.btn{
+    background:#3b82f6;
+    color:white;
+}
+
+.level{
+    background:#10b981;
+    color:white;
+}
+
+.option{
+    display:block;
+    width:100%;
+    text-align:left;
+    margin-top:10px;
+    background:white;
+    color:black;
+}
+
+.score{
+    position:fixed;
+    top:15px;
+    right:20px;
+    background:#2563eb;
+    padding:12px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+ul{
+    padding-left:20px;
+    line-height:1.8;
+}
+
+.mission{
+    min-height:400px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="score">
+Puntos: <span id="score">0</span>
+</div>
+
+<!-- INICIO -->
+
+<section id="inicio" class="screen active">
+
+<h1>IES LA FRESNEDA</h1>
+
+<div class="card">
+
+<h2>Digitalización</h2>
+
+<p><strong>Fecha:</strong> <span id="fecha"></span></p>
+
+<br>
+
+<p>
+Bienvenido a <strong>Misión Digitalización 365</strong>.
+Tu objetivo es superar diferentes desafíos tecnológicos y obtener
+insignias digitales relacionadas con herramientas y competencias
+fundamentales de la transformación digital.
+</p>
+
+<br>
+
+<h3>Selecciona tu nivel:</h3>
+
+<button class="level" onclick="startGame('12-14')">
+🟢 Explorador Digital (12-14 años)
+</button>
+
+<button class="level" onclick="startGame('14-16')">
+🟡 Experto Digital (14-16 años)
+</button>
+
+<button class="level" onclick="startGame('16-18')">
+🔴 Maestro Digital (16-18 años)
+</button>
+
+</div>
+
+</section>
+
+<!-- MISIONES -->
+
+<section id="game" class="screen">
+
+<h2 id="missionTitle"></h2>
+
+<div class="card mission">
+
+<p id="missionText"></p>
+
+<div id="options"></div>
+
+</div>
+
+</section>
+
+<!-- FINAL -->
+
+<section id="final" class="screen">
+
+<h1>🎓 ¡Misión Completada!</h1>
+
+<div class="card">
+
+<h2>Resultado Final</h2>
+
+<p id="resultado"></p>
+
+<br>
+
+<h3 id="clasificacion"></h3>
+
+<br>
+
+<p>
+La tecnología no consiste solo en utilizar herramientas,
+sino en comprenderlas, crear con ellas y utilizarlas
+de forma responsable.
+</p>
+
+<br>
+
+<button class="btn" onclick="location.reload()">
+Jugar otra vez
+</button>
+
+</div>
+
+</section>
+
+<script>
+
+document.getElementById("fecha").textContent =
+new Date().toLocaleDateString("es-ES");
+
+let score = 0;
+let current = 0;
+
+const missions = [
+
+{
+title:"💻 Sistemas Operativos",
+question:"¿Cuál es un sistema operativo?",
+answers:["Windows","Excel","Canva"],
+correct:0
+},
+
+{
+title:"🌐 Redes y Conectividad",
+question:"¿Qué dispositivo distribuye Internet en casa?",
+answers:["Router","Pantalla","Teclado"],
+correct:0
+},
+
+{
+title:"☁️ Almacenamiento y Nube",
+question:"¿Qué servicio almacena archivos en la nube?",
+answers:["OneDrive","Word","HTML"],
+correct:0
+},
+
+{
+title:"👨‍💻 Programación",
+question:"¿Qué es un algoritmo?",
+answers:[
+"Pasos para resolver un problema",
+"Un antivirus",
+"Una red WiFi"
+],
+correct:0
+},
+
+{
+title:"🌍 HTML y Diseño Web",
+question:"¿Qué etiqueta crea un título principal?",
+answers:["<h1>","<img>","<table>"],
+correct:0
+},
+
+{
+title:"🎬 Multimedia",
+question:"¿Qué herramienta sirve para editar imágenes y vídeos?",
+answers:["Herramientas multimedia","Router","Excel"],
+correct:0
+},
+
+{
+title:"🔒 Ciberseguridad",
+question:"¿Qué contraseña es más segura?",
+answers:[
+"Casa123",
+"123456",
+"R8$kL9@zP"
+],
+correct:2
+},
+
+{
+title:"🎨 Canva",
+question:"Canva se utiliza principalmente para...",
+answers:[
+"Diseño gráfico",
+"Crear sistemas operativos",
+"Programar routers"
+],
+correct:0
+},
+
+{
+title:"🧩 Tinkercad",
+question:"Tinkercad permite...",
+answers:[
+"Diseño 3D",
+"Enviar correos",
+"Crear redes"
+],
+correct:0
+},
+
+{
+title:"📄 Word",
+question:"Word se utiliza para...",
+answers:[
+"Procesar textos",
+"Crear circuitos",
+"Gestionar routers"
+],
+correct:0
+},
+
+{
+title:"📊 Excel",
+question:"¿Qué hace una fórmula en Excel?",
+answers:[
+"Calcula datos",
+"Edita vídeos",
+"Navega por Internet"
+],
+correct:0
+},
+
+{
+title:"🤖 Inteligencia Artificial",
+question:"¿Qué es un prompt?",
+answers:[
+"Instrucción para la IA",
+"Un antivirus",
+"Una contraseña"
+],
+correct:0
+},
+
+{
+title:"🏫 Campus Moodle",
+question:"Moodle sirve para...",
+answers:[
+"Gestionar aprendizaje online",
+"Editar imágenes",
+"Crear videojuegos"
+],
+correct:0
+},
+
+{
+title:"💬 Teams",
+question:"Teams permite...",
+answers:[
+"Videollamadas y colaboración",
+"Programar sistemas operativos",
+"Crear HTML"
+],
+correct:0
+},
+
+{
+title:"☁️ Microsoft 365",
+question:"Microsoft 365 incluye...",
+answers:[
+"Word, Excel y Teams",
+"Linux y Android",
+"HTML y CSS"
+],
+correct:0
+},
+
+{
+title:"📋 Forms",
+question:"Forms se utiliza para...",
+answers:[
+"Crear encuestas y cuestionarios",
+"Editar vídeos",
+"Crear redes"
+],
+correct:0
+}
+
+];
+
+function startGame(level){
+
+document.getElementById("inicio").classList.remove("active");
+document.getElementById("game").classList.add("active");
+
+showMission();
+}
+
+function showMission(){
+
+let m = missions[current];
+
+document.getElementById("missionTitle").textContent = m.title;
+document.getElementById("missionText").textContent = m.question;
+
+let options = document.getElementById("options");
+options.innerHTML = "";
+
+m.answers.forEach((answer,index)=>{
+
+let btn = document.createElement("button");
+btn.className = "option";
+btn.innerText = answer;
+
+btn.onclick = ()=>checkAnswer(index);
+
+options.appendChild(btn);
+
+});
+}
+
+function checkAnswer(selected){
+
+if(selected === missions[current].correct){
+
+score += 10;
+document.getElementById("score").textContent = score;
+
+alert("✅ Correcto");
+
+}else{
+
+alert("❌ Incorrecto");
+}
+
+current++;
+
+if(current < missions.length){
+
+showMission();
+
+}else{
+
+finishGame();
+}
+}
+
+function finishGame(){
+
+document.getElementById("game").classList.remove("active");
+document.getElementById("final").classList.add("active");
+
+document.getElementById("resultado").innerHTML =
+"Has conseguido <strong>" + score +
+" puntos</strong> de " + (missions.length*10);
+
+let texto="";
+
+if(score<70){
+texto="🥉 Aprendiz Digital";
+}
+else if(score<130){
+texto="🥈 Experto Digital";
+}
+else{
+texto="🥇 Maestro de la Digitalización";
+}
+
+document.getElementById("clasificacion").textContent = texto;
+}
+
+</script>
+
+</body>
+</html>
